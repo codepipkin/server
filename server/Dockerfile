@@ -7,7 +7,7 @@ ENV GODOT_VERSION=4.5.2
 
 RUN apk add --no-cache wget unzip
 
-RUN wget https://github.com{GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_export_templates.tpz \
+RUN wget https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_export_templates.tpz \
     && unzip Godot_v${GODOT_VERSION}-stable_export_templates.tpz \
     && mv templates/linux_release.x86_64 /godot-server \
     && chmod +x /godot-server
