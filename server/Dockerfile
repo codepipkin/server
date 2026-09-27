@@ -1,14 +1,12 @@
 # ==========================================
-# Stage 1: Download Godot 4.5 Export Templates
+# Stage 1: Download Godot 4.5.2 Export Templates
 # ==========================================
 FROM alpine:3.19 AS builder
 
-# Setting to the stable 4.5 production release
 ENV GODOT_VERSION=4.5.2
 
 RUN apk add --no-cache wget unzip
 
-# Downloads the official 4.5.2 export templates package
 RUN wget https://github.com{GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_export_templates.tpz \
     && unzip Godot_v${GODOT_VERSION}-stable_export_templates.tpz \
     && mv templates/linux_release.x86_64 /godot-server \
@@ -23,13 +21,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
-RUN useradd -m godot
-USER godot
-WORKDIR /home/godot
+WORKDIR /app
 
+# Copy binaries into root app workspace to prevent Railway permission faults
 COPY --from=builder /godot-server ./godot-server
-COPY --chown=godot:godot ./export/server.pck ./server.pck
+COPY ./export/server.pck ./server.pck
 
-EXPOSE 8080
+# Hand off port handling to Railway's execution environment
+ENV PORT=8080
+EXPOSE $PORT
 
 ENTRYPOINT ["./godot-server", "--headless", "--main-pack", "server.pck"]

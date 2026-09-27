@@ -1,22 +1,21 @@
 extends Node
 
 var peer = WebSocketMultiplayerPeer.new()
-const PORT = 8080 # The port your server will listen on
 
 func _ready():
-	# 1. Start the server on your specified port
-	var err = peer.create_server(PORT)
+	# Default to 8080 locally, but read Railway's dynamic variable if it exists
+	var port = 8080
+	if OS.has_environment("PORT"):
+		port = OS.get_environment("PORT").to_int()
+
+	var err = peer.create_server(port)
 	if err != OK:
 		print("Failed to start server: ", err)
 		return
 		
-	# 2. Tell Godot to use this peer for multiplayer
 	multiplayer.multiplayer_peer = peer
-	print("Dedicated WebSocket Server started on port ", PORT)
+	print("Dedicated Chat Server successfully started on port: ", port)
 
-	# 3. Connect signals to track players
-	multiplayer.peer_connected.connect(_on_player_connected)
-	multiplayer.peer_disconnected.connect(_on_player_disconnected)
 
 func _process(_delta):
 	# Note: High-level multiplayer peers poll automatically, 
