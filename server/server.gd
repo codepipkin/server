@@ -27,6 +27,7 @@ func _on_player_connected(id: int):
 
 func _on_player_disconnected(id: int):
 	print("Player disconnected. Network ID: ", id)
+	system_broadcast("[color=cyan]« now leaving [A][/color]" + ": " + "pipkin")
 	
 # rpc ------------------------------------
 
@@ -43,7 +44,9 @@ func send_chat_message(username: String, message: String):
 
 # Helper function for server-side system messages
 func system_broadcast(msg: String):
-	receive_chat_broadcast.rpc("SYSTEM", msg)
+	receive_chat_broadcast.rpc("yapper_chan", msg)
+
+
 
 # Placeholder so the server compiles properly (clients will override this)
 @rpc("authority", "call_local", "reliable")
