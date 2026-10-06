@@ -15,6 +15,8 @@ func _ready():
 		
 	multiplayer.multiplayer_peer = peer
 	print("Dedicated Chat Server successfully started on port: ", port)
+	
+	multiplayer.peer_disconnected.connect(_on_player_disconnected)
 
 
 func _process(_delta):
